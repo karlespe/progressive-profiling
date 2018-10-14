@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+  <style type="text/css">
+    body { padding-top: 30px; padding-left: 40px; padding-right: 40px; }
+  </style>
+  <script src="https://cdn.auth0.com/js/auth0/9.5.1/auth0.min.js"></script>
+  <script type="text/javascript">
+
+    function signIn() {
+
+      var domain = document.getElementById("domain").value;
+      var clientId = document.getElementById("clientId").value;
+
+      // Initialize the Auth0 application
+      var webAuth = new auth0.WebAuth({
+        domain: domain,
+        clientID: clientId,
+        audience: 'https://' + domain + '/api/v2/',
+        redirectUri: 'http://localhost:8080/callback.html',
+        responseType: 'token id_token code',
+        scope: 'openid profile read:current_user create:current_user_metadata update:current_user_metadata offline_access'
+      });
+      webAuth.authorize();
+
+    }
+
+  </script>
+</head>
+<body>
+<div class="container">
+
+  <h1 class="title is-3">Progressive Profiling Sample Application</h1>
+
+
+  <p>Configure an Application (e.g. Single Page Application or use the Application automatically created for you)
+    under your Auth0 tenant in the Auth0 Dashboard. Use that Application's
+  "Domain" and "Client ID" property values in the form below. A prerequisite is that you add "<strong>http://localhost:8080/callback.html</strong>"
+  to the allowed "Allowed Callback URLs" list in the Application's settings.</p>
+
+  <br/>
+
+  <div class="field">
+    <label class="label">Domain</label>
+    <div class="control">
+      <input class="input" id="domain" type="text" value=".auth0.com" placeholder="Your Auth0 domain URI">
+      <p class="help">Your Auth0 domain URI</p>
+    </div>
+  </div>
+
+
+  <div class="field">
+    <label class="label">Client ID</label>
+    <div class="control">
+      <input class="input" id="clientId" type="text" placeholder="Your Auth0 application client ID">
+    </div>
+  </div>
+
+  <br/>
+
+  <div class="field is-grouped">
+    <div class="control">
+      <button class="button is-link" onclick="signIn(); return false;">Proceed to Auth0 sign in</button>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

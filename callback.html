@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Progressive Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+  <style type="text/css">
+    body { padding-top: 30px; padding-left: 40px; padding-right: 40px; }
+  </style>
+  <script src="https://cdn.auth0.com/js/auth0/9.5.1/auth0.min.js"></script>
+  <script language="JavaScript" type="text/javascript" src="https://kjur.github.io/jsrsasign/jsrsasign-latest-all-min.js"></script>
+  <script src="/dist/progressive-profile.min.js"></script>
+  <script type="text/javascript">
+
+    function getHashVariable(variable) {
+      var href = window.location.href;
+      var query = decodeURIComponent(href.substring(href.indexOf('#') + 1));
+      var vars = query.split('&');
+      for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) == variable) {
+          return decodeURIComponent(pair[1]);
+        }
+      }
+    }
+
+    var token = getHashVariable("access_token");
+    var payload = KJUR.jws.JWS.readSafeJSONString(b64utoutf8(token.split(".")[1]));
+    var domain = payload.iss.substring(8, payload.iss.length - 1);
+
+    var progressiveProfile = new auth0pp.ProgressiveProfile({
+      domain: domain,
+      token: token,
+      questionsPerProfilingStep: 2,
+      questions: [
+        {
+          key: "job_title",
+          text: "What is your job title?"
+        },
+        {
+          key: "employer",
+          text: "What is the name of your employer?"
+        },
+        {
+          key: "product_interest",
+          text: "Are you interested in this new product?",
+          options: ["Yes", "Nope", "Maybe"]
+        },
+        {
+          key: "decision",
+          text: "When will you make a decision about it?",
+          options: ["This week", "Next week", "Next month", "Later"]
+        }
+      ]
+    });
+    progressiveProfile.show(function(error, user) {
+      var msg = "";
+      if (error) {
+        msg = error;
+      } else {
+        if (user) {
+          msg = "The authenticated user was updated and contains the following data...<p><pre>" + JSON.stringify(user, undefined, 2) + "</pre></p>";
+        } else {
+          msg = "The authenticated user was not updated."
+        }
+      }
+      document.getElementById("content").innerHTML = msg;
+    });
+
+  </script>
+</head>
+<body>
+<div class="container">
+
+  <h1 class="title is-3">Progressive Profiling Sample Application</h1>
+
+  <p>
+
+    <span id="content"></span>
+
+  </p>
+
+</div>
+</body>
+</html>
