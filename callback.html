@@ -13,17 +13,19 @@
   <script src="/dist/progressive-profile.min.js"></script>
   <script type="text/javascript">
 
-    function getHashVariable(variable) {
-      var href = window.location.href;
-      var query = decodeURIComponent(href.substring(href.indexOf('#') + 1));
-      var vars = query.split('&');
-      for (var i = 0; i < vars.length; i++) {
-        var pair = vars[i].split('=');
-        if (decodeURIComponent(pair[0]) == variable) {
-          return decodeURIComponent(pair[1]);
-        }
-      }
-    }
+    // For convenience for the Sample Application the Auth0 domain is retrieved from
+    // the callback URL's Access Token. Typically one would simply configure the
+    // domain variable manually.
+    // e.g.
+    // var domain = "example.auth0.com";
+    // Similarly, the Auth0 Access Token can be parsed from the callback URL hash using the Auth0.js library.
+    // e.g.
+    // var webAuth = new auth0.WebAuth({ domain: "example.auth0.com", clientID: "abc123DEF456ghi789" });
+    // webAuth.parseHash({ hash: window.location.hash }, function(error, authResult) {
+    //   console.log('Access Token: ' + authResult.accessToken);
+    // });
+    // The methods used here are for convenience to keep the Sample Application generic and
+    // Auth0-tenant-detail-free.
 
     var token = getHashVariable("access_token");
     var payload = KJUR.jws.JWS.readSafeJSONString(b64utoutf8(token.split(".")[1]));
@@ -67,6 +69,18 @@
       }
       document.getElementById("content").innerHTML = msg;
     });
+
+    function getHashVariable(variable) {
+      var href = window.location.href;
+      var query = decodeURIComponent(href.substring(href.indexOf('#') + 1));
+      var vars = query.split('&');
+      for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) == variable) {
+          return decodeURIComponent(pair[1]);
+        }
+      }
+    }
 
   </script>
 </head>
